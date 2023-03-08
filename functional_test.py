@@ -22,6 +22,14 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def check_for_row_in_list_table(self, row_text):
+        """
+        Verifica todos los textos dentro del table
+        """
+        table = self.browser.find_element(By.ID, 'id_list_table')
+        rows = table.find_elements(By.TAG_NAME, 'tr')
+        self.assertIn(row_text, [row.text for row in rows])
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         """
         Test para ver los items del html
@@ -45,22 +53,18 @@ class NewVisitorTest(unittest.TestCase):
         #la pagina muestra una lista,
         # "1: Buy peacokc feathers" como un item en una tabla de to-do
         time.sleep(5)
+        inputbox.send_keys('Buy peacock feathers')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
+        #Hay otro text box invitando a que ingrese otro valor
+        #Enter another item
+        inputbox = self.browser.find_element(By.ID, 'id_new_item')
         inputbox.send_keys('Use peacock feathers to make a fly')
         inputbox.send_keys(Keys.ENTER)
-        table = self.browser.find_element(By.ID, 'id_list_table')
-        rows = table.find_elements(By.TAG_NAME, "tr")
-        for row in rows:
-            print(row.text)
-            print('########')
-        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
-        # self.assertTrue(
-        #     any(row.text == '1: Buy peacock feathers' for row in rows),
-        #     f"New to-do item no aparece en la tabla. Contents where: \n{table.text}"
-        #     )
-        self.assertIn('2: Use peacock feathers to make a fly', [row.text for row in rows])
-        #Aun hay una caja de texto invitando a agregar otro item
-        # Se ingresa "Use peacock feathers to make a fly" (Ediths is very
-        # methodical)
+        time.sleep(2)
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
+        self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
         self.fail('Finish the TEST!!!!!!!!!')
         #La pagina se actualiza de nuevo :D
 
