@@ -1,6 +1,7 @@
 import time
 import unittest
 
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -12,7 +13,7 @@ from selenium.webdriver.common.by import By
 # assert 'install' in browser.title
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     """
     New Visitor Test
     """
@@ -34,7 +35,7 @@ class NewVisitorTest(unittest.TestCase):
         """
         Test para ver los items del html
         """
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
         #Ella se da cuenta que el titulo de la pagina y el header
         #mencionan To-Do List
         self.assertIn('To-Do', self.browser.title)
@@ -51,22 +52,16 @@ class NewVisitorTest(unittest.TestCase):
 
         #El usuario presiona enter, la pagina se actualiza y ahora
         #la pagina muestra una lista,
-        # "1: Buy peacokc feathers" como un item en una tabla de to-do
-        time.sleep(5)
+        # "1: Buy peacokc feathers" como un item en una tabla de to-do        
         inputbox.send_keys('Buy peacock feathers')
-        inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
+        inputbox.send_keys(Keys.ENTER)        
         self.check_for_row_in_list_table('1: Buy peacock feathers')
         #Hay otro text box invitando a que ingrese otro valor
         #Enter another item
         inputbox = self.browser.find_element(By.ID, 'id_new_item')
         inputbox.send_keys('Use peacock feathers to make a fly')
-        inputbox.send_keys(Keys.ENTER)
-        time.sleep(5)
+        inputbox.send_keys(Keys.ENTER)        
         self.check_for_row_in_list_table('1: Buy peacock feathers')
         self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
         self.fail('Finish the TEST!!!!!!!!!')
         #La pagina se actualiza de nuevo :D
-
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
