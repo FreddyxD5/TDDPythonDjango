@@ -1,3 +1,6 @@
+"""
+Unit test to todo application
+"""
 from django.test import TestCase
 # from django.template.loader import render_to_string
 # from todo.views import home_page
@@ -44,9 +47,31 @@ class HomePageTest(TestCase):
         """
         metodo para guardar una peticion POST
         """
+        self.client.post('/', data={'item_text':'A new list item'})
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new list item')
+
+    def test_redirects_after_post(self):
+        """
+        smht
+        """
         response = self.client.post('/', data={'item_text':'A new list item'})
-        self.assertIn('A new list item', response.content.decode())
-        self.assertTemplateUsed(response, 'todo/home.html')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'],'/')
+
+    def test_display_all_list_items(self):
+        """
+        """
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+        
+        response = self.client.get('/')
+
+        self.assertIn('itemey 1', response.content.decode())
+        self.assertIn('itemey 2', response.content.decode())
+
+
 
 class ItemModelTest(TestCase):
     """
@@ -67,4 +92,4 @@ class ItemModelTest(TestCase):
         first_saved_item = saved_items[0]
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text, 'The first (ever) list item')
-        self.assertEqual(second_saved_item.text, 'Item the second')        
+        self.assertEqual(second_saved_item.text, 'Item the second')
