@@ -73,7 +73,60 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys('Use peacock feathers to make a fly')
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_list_table('2: Use peacock feathers to make a fly')
-        self.wait_for_row_in_list_table('1: Buy peacock feathers')
-        
+        self.wait_for_row_in_list_table('1: Buy peacock feathers')        
         self.fail('Finish the TEST!!!!!!!!!')
         #La pagina se actualiza de nuevo :D
+
+    def test_can_start_a_list_for_one_user(self):
+        """
+        Can start a list for one user
+        """
+        self.wait_for_row_in_list_table('2: Use peacock feathers to make a fly')
+        self.wait_for_row_in_list_table('1: Buy a peacock feathers')
+
+    def test_multiple_users_can_start_lists_at_different_urls(self):
+        """
+        Multiple users
+        """
+        #Edith empieza con una nueva todo lista
+        self.browser.get(self.live_server_url)
+        inputbox = self.browser.find_element(By.ID, 'id_new_item')
+        inputbox.send_keys('Buy peacock feathers')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Buy peacock feathers')
+
+        #Se da cuenta que su lista tiene un unico url
+        edith_list_url = self.browser.current_url
+        self.assertRegex(edith_list_url, '/lists/.+')
+
+        #Ahora un nuevo usuario, Maby, viene al sitio
+        ## Usamos una nueva session para asegurarnos que la informacion
+        ## de edith esta viviendo a través de las cookies
+        self.browser.quit()
+        self.browser = webdriver.Edge()
+
+        #Jose visita la pagina de inicio, Ahi no hay signos de la lista
+        #de Edith
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element(By.TAG_NAME, 'body').text
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertNotIn('make a fly', page_text)
+
+        #Jose empieza una nueva lista insertando un nuevo item.
+        # Es el menos interesante que edith
+        inputbox = self.browser.find_element('id_new_item')
+        inputbox.send_keys('Buy milk')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Buy milk')
+
+        #Jose obtiene su propia url unica
+        jose_list_url = self.browser.current_url
+        self.assertRegex(jose_list_url, '/lists/.+')
+        self.assertNotEqual(jose_list_url, edith_list_url)
+
+        #De nuevo, no hay rastro de la lista de edith
+        page_text = self.browser.find_element(By.TAG_NAME, 'body').text
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertIn('Buy milk', page_text)
+        #Satisfecho, ambos regresan a dormir
+        
