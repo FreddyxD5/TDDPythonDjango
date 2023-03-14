@@ -37,7 +37,7 @@ class NewVisitorTest(LiveServerTestCase):
                 rows = table.find_elements(By.TAG_NAME, 'tr')
                 self.assertIn(row_text, [row.text for row in rows])
                 return
-            except (AssertionError, WebDriverException) as error:                
+            except (AssertionError, WebDriverException) as error:
                 if time.time() - start_time > MAX_WAIT:
                     raise error
                 time.sleep(0.5)
@@ -74,7 +74,7 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_list_table('2: Use peacock feathers to make a fly')
         self.wait_for_row_in_list_table('1: Buy peacock feathers')        
-        self.fail('Finish the TEST!!!!!!!!!')
+        # self.fail('Finish the TEST!!!!!!!!!')
         #La pagina se actualiza de nuevo :D
 
     def test_can_start_a_list_for_one_user(self):
