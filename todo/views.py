@@ -26,10 +26,18 @@ def new_list(request):
     Nuevo item 
     """
     list_ = List.objects.create()
-    Item.objects.create(text=request.POST['item_text'], list = list_)
-    return redirect('/lists/the-only-list-in-the-world/')
+    Item.objects.create(text=request.POST['item_text'], list = list_)    
+    return redirect(f'/lists/{list_.id}')
 
 def list_items(request, list_id):
     list_ = List.objects.get(id=list_id)
     items = Item.objects.filter(list=list_)
     return render(request, 'todo/list.html', {'items':items})
+
+def add_item(request, list_id):
+    """
+    Funcion para añadir un nuevo item a una lista existente
+    """
+    list_ = List.objects.get(id=list_id)
+    item = Item.objects.create(text = request.POST['item_text'], list = list_)    
+    return redirect(f'/lists/{list_.id}')

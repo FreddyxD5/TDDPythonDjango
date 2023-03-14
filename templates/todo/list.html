@@ -15,6 +15,9 @@
             <tr><td>{{forloop.counter}}: {{ item.text }}</td></tr>
             {% endfor %}
         </table>
+        <form method="POST" action="/lists/{{list.id}}/add_item">
+            
+        </form>
 
         <script src="" async defer></script>
     </body>
