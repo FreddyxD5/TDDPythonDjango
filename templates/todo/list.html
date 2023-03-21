@@ -1,26 +1,11 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>To-Do lists</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>        
-        <h1>To-Do</h1>                
-        <table id="id_list_table">
-            {% for item in items %}
-            <tr><td>{{forloop.counter}}: {{ item.text }}</td></tr>
-            {% endfor %}
-        </table>
-        <form method="POST" action="/lists/{{list.id}}/add_item">
-            {% for item in list.item_set.all %}
-            <tr><td>{{forloop.counter}}: {{item.text}}</td></tr>
-            {% endfor %}
-        </form>
+{% extends 'base.html' %}
+{% block header_text %}To-Do {% endblock %}
 
-        <script src="" async defer></script>
-    </body>
-</html>
+{% block form_action %}/lists/{{list.id}}/add_item/{% endblock%}   
+{% block table %}
+<table id="id_list_table" class="table">
+    {% for item in list.item_set.all %}
+        <tr><td>{{ forloop.counter }}: {{item.text}}</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
