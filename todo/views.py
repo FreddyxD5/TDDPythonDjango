@@ -13,13 +13,14 @@ def home_page(request):
     """
     return render(request,'todo/home.html')
 
-def view_list(request):
+def view_list(request, list_id):
     """
     Vista de lista de items
     """
-    list_ = List.objects.create()
+    # list_ = List.objects.create()
+    list_ = List.objects.get(id=list_id)
     items = Item.objects.all()
-    return render(request, 'todo/list.html',{'items':items})
+    return render(request, 'todo/list.html',{'list':list_})
 
 def new_list(request):
     """
