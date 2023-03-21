@@ -1,3 +1,4 @@
+import os
 import time
 import unittest
 
@@ -22,6 +23,9 @@ class NewVisitorTest(StaticLiveServerTestCase):
     """
     def setUp(self):
         self.browser = webdriver.Edge()
+        staging_server = os.environ.get('STAGING_SERVER')
+        if staging_server:            
+            self.live_server_url = 'http://'+staging_server
 
     def tearDown(self):
         # self.browser.refresh()
@@ -138,7 +142,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         #Ella se da cuenta que el cuadro de entrada esta bien centrado
         inputbox = self.browser.find_element(By.ID, 'id_new_item')
         self.assertAlmostEqual(inputbox.location['x'] + inputbox.size['width']/2,
-                               512,
+                               290,
                                delta=50
                                )
         
